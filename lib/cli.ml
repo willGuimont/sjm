@@ -13,25 +13,36 @@ let list_remotes =
          |> List.map ~f:(fun (s1, s2) -> s1 ^ " " ^ s2)
          |> List.iter ~f:print_endline))
 
-let get_host_from_name =
-  Command.basic ~summary:"Get host from name"
-    (let%map_open.Command name = anon ("name" %: string) in
-     fun () ->
-       State.get_host_from_name name
-       |> Option.value_exn ~message:"No host found for this name"
-       |> print_endline)
-
 let remove_host =
   Command.basic ~summary:"Remove a host"
     (let%map_open.Command name = anon ("name" %: string) in
      fun () -> State.remove_remote name)
+
+let list_jobs =
+  Command.basic ~summary:"List all jobs on host"
+    (let%map_open.Command name = anon ("name" %: string) in
+     fun () ->
+       State.get_host_from_name name |> fun host ->
+       match host with
+       | Some host -> Slurm.get_jobs host |> List.iter ~f:print_endline
+       | None -> print_endline "Host not found")
+
+(* let batch_job =
+  Command.basic ~summary:"Submit a batch job"
+    (let%map_open.Command name = anon ("name" %: string)
+     and file = anon ("script" %: string) in
+     fun () ->
+       State.get_host_from_name name |> fun host ->
+       match host with
+       | Some host -> Slurm.submit_batch_job host file
+       | None -> print_endline "Host not found") *)
 
 (* Grouping all commands *)
 let commands =
   Command.group ~summary:"Slurm Job Manager"
     [
       ("add", add_remote);
-      ("list", list_remotes);
-      ("get", get_host_from_name);
+      ("ls", list_remotes);
       ("rm", remove_host);
+      ("ps", list_jobs);
     ]

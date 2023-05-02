@@ -15,8 +15,6 @@ depends: [
   "ANSITerminal"
   "core"
   "core_unix"
-  "lwt"
-  "async"
   "odoc" {with-doc}
 ]
 build: [

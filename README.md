@@ -1,4 +1,4 @@
-# sjm
+# sjm: **S**LURM **J**ob **M**anager
 
 Manage SLURM jobs on multiple clusters easily.
 
@@ -6,6 +6,11 @@ Manage SLURM jobs on multiple clusters easily.
 
 ```bash
 # Add remote (ssh-copy-id is required)
-sjm add <name> <remote>
-# TODO add move command
+sjm add <name> <user@host>
+# List remotes
+sjm ls
+# Remove remote
+sjm rm <name>
+# List jobs on remote
+sjm ps <name>
 ```
