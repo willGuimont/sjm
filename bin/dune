@@ -1,0 +1,4 @@
+(executable
+ (public_name sjm)
+ (name main)
+ (libraries sjm))
