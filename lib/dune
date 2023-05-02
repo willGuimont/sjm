@@ -1,3 +1,4 @@
 (library
  (name sjm)
- (libraries ANSITerminal core core_unix.command_unix lwt))
+ (libraries ANSITerminal core core_unix.command_unix lwt)
+ (preprocess (pps ppx_jane)))
