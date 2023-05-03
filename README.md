@@ -2,6 +2,12 @@
 
 Manage SLURM jobs on multiple clusters easily.
 
+## Installation
+
+```bash
+opam install .
+```
+
 ## Usage
 
 ```bash

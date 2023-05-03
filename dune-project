@@ -19,7 +19,7 @@
  (name sjm)
  (synopsis "Slurm Job Manager")
  (description "Allows you to manage your Slurm jobs from the command line.")
- (depends ocaml dune ANSITerminal core core_unix)
+ (depends ocaml dune ANSITerminal core core_unix ppx_tools ppx_jane)
  (tags
   (cli tool slurm manager deep-learning)))
 

@@ -27,15 +27,26 @@ let list_jobs =
        | Some host -> Slurm.get_jobs host |> List.iter ~f:print_endline
        | None -> print_endline "Host not found")
 
-(* let batch_job =
-  Command.basic ~summary:"Submit a batch job"
-    (let%map_open.Command name = anon ("name" %: string)
-     and file = anon ("script" %: string) in
+let clear_job_cache =
+  Command.basic ~summary:"Clear the job cache"
+    (let%map_open.Command name = anon ("name" %: string) in
      fun () ->
        State.get_host_from_name name |> fun host ->
        match host with
-       | Some host -> Slurm.submit_batch_job host file
-       | None -> print_endline "Host not found") *)
+       | Some host -> Slurm.clear_job_cache host |> ignore
+       | None -> print_endline "Host not found")
+
+let batch_job =
+  Command.basic ~summary:"Submit a batch job"
+    (let%map_open.Command name = anon ("name" %: string)
+     and script = anon ("script" %: string)
+     and patterns = anon (sequence ("pattern" %: string)) in
+     fun () ->
+       State.get_host_from_name name |> fun host ->
+       match host with
+       | Some host ->
+           Slurm.submit_job host script patterns |> List.iter ~f:print_endline
+       | None -> print_endline "Host not found")
 
 (* Grouping all commands *)
 let commands =
@@ -45,4 +56,6 @@ let commands =
       ("ls", list_remotes);
       ("rm", remove_host);
       ("ps", list_jobs);
+      ("start", batch_job);
+      ("clear", clear_job_cache);
     ]
