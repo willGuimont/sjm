@@ -5,6 +5,7 @@ Manage SLURM jobs on multiple clusters easily.
 ## Installation
 
 ```bash
+git clone https://github.com/willGuimont/sjm
 opam install .
 ```
 
