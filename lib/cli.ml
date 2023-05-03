@@ -29,14 +29,20 @@ let list_jobs =
 
 let clear_job_cache =
   Command.basic ~summary:"Clear the job cache"
+    (Command.Param.return (fun () ->
+         Slurm.clear_job_cache ();
+         print_endline "Cache cleared"))
+
+let clear_remote_job_cache =
+  Command.basic ~summary:"Clear the job cache for a remote"
     (let%map_open.Command name = anon ("name" %: string) in
      fun () ->
        State.get_host_from_name name |> fun host ->
        match host with
-       | Some host -> Slurm.clear_job_cache host |> ignore
+       | Some host -> Slurm.clear_remote_job_cache host
        | None -> print_endline "Host not found")
 
-let batch_job =
+let submit_job =
   Command.basic ~summary:"Submit a batch job"
     (let%map_open.Command name = anon ("name" %: string)
      and script = anon ("script" %: string)
@@ -56,6 +62,7 @@ let commands =
       ("ls", list_remotes);
       ("rm", remove_host);
       ("ps", list_jobs);
-      ("start", batch_job);
-      ("clear", clear_job_cache);
+      ("run", submit_job);
+      ("clr", clear_job_cache);
+      ("clr-remote", clear_remote_job_cache);
     ]
