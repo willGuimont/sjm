@@ -1,5 +1,6 @@
 open Core
 
+(* Remote management *)
 let add_remote =
   Command.basic ~summary:"Add a remote ssh server"
     (let%map_open.Command name = anon ("name" %: string)
@@ -18,6 +19,7 @@ let remove_host =
     (let%map_open.Command name = anon ("name" %: string) in
      fun () -> State.remove_remote name)
 
+(* Job management *)
 let list_jobs =
   Command.basic ~summary:"List all jobs on host"
     (let%map_open.Command name = anon ("name" %: string) in
@@ -54,15 +56,30 @@ let submit_job =
            Slurm.submit_job host script patterns |> List.iter ~f:print_endline
        | None -> print_endline "Host not found")
 
+(* Git commands *)
+let git_pull =
+  Command.basic ~summary:"Pull from git"
+    (let%map_open.Command name = anon ("name" %: string)
+     and directory = anon ("directory" %: string) in
+     fun () ->
+       State.get_host_from_name name |> fun host ->
+       match host with
+       | Some host -> Git.git_pull_remote host directory
+       | None -> print_endline "Host not found")
+
 (* Grouping all commands *)
 let commands =
   Command.group ~summary:"Slurm Job Manager"
     [
+      (* Remote *)
       ("add", add_remote);
       ("ls", list_remotes);
       ("rm", remove_host);
+      (* Slurm *)
       ("ps", list_jobs);
       ("run", submit_job);
       ("clr", clear_job_cache);
       ("clr-remote", clear_remote_job_cache);
+      (* Git *)
+      ("pull", git_pull);
     ]

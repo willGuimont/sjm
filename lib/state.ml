@@ -7,7 +7,6 @@ let permission_dir = 0o760
 let permission_file = 0o660
 
 (* Helper functions *)
-
 let append_to_config path content =
   let oc =
     open_out_gen [ Open_creat; Open_text; Open_append ] permission_file path
