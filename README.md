@@ -6,7 +6,6 @@ Manage SLURM jobs on multiple clusters easily.
 
 ```bash
 git clone https://github.com/willGuimont/sjm
-dune build
 opam install .
 ```
 
