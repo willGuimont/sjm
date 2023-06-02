@@ -49,3 +49,6 @@ let submit_job host script_path replace_patterns =
 
   Utils.send_string_to_file host local_script_path remote_script_path;
   Utils.ssh_command host sbatch_command
+
+let cancel_job host job_id =
+  Utils.ssh_command host (Printf.sprintf "scancel %s" job_id) |> ignore

@@ -56,6 +56,16 @@ let submit_job =
            Slurm.submit_job host script patterns |> List.iter ~f:print_endline
        | None -> print_endline "Host not found")
 
+let cancel_job =
+  Command.basic ~summary:"Cancel a job"
+    (let%map_open.Command name = anon ("name" %: string)
+     and job_id = anon ("job_id" %: string) in
+     fun () ->
+       State.get_host_from_name name |> fun host ->
+       match host with
+       | Some host -> Slurm.cancel_job host job_id
+       | None -> print_endline "Host not found")
+
 (* Git commands *)
 let git_pull =
   Command.basic ~summary:"Pull from git"
@@ -80,6 +90,7 @@ let commands =
       ("run", submit_job);
       ("clr", clear_job_cache);
       ("clr-remote", clear_remote_job_cache);
+      ("cancel", cancel_job);
       (* Git *)
       ("pull", git_pull);
     ]
